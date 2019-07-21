@@ -17,7 +17,7 @@
 /* @version:1.30 (2019/07/20)                  */
 /*  Create AI play thinking nothing and randam.*/
 /* @version:1.40 (2019/07/20)                  */
-/*  Update AI play search center square.       */
+/*  ate AI play search center square.       */
 /***********************************************/
 
 #include <stdio.h>
