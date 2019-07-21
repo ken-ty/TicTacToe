@@ -6,7 +6,7 @@
 /*---------------------------------------------*/
 /* @Description:                               */
 /*  M×Nの盤でK目並べをする。                   */
-/*  player1は○, player2は×で表す。             */
+/*  AIは○, Userは×で表す。                     */
 /*---------------------------------------------*/
 /* @version:1.00 (2019/07/19)                  */
 /*  Create 3×3 game for PvP.                   */ 
@@ -20,6 +20,8 @@
 /*  Create AI play search center square.       */
 /* @version:1.41 (2019/07/21)                  */
 /*  Update AI hide miss choice.                */
+/* @version:1.42 (2019/07/21)                  */
+/*  Change first player choise to random.      */
 /***********************************************/
 
 #include <stdio.h>
@@ -47,7 +49,7 @@ int main(void)
 {
 	int i, j;
 	int turn;
-    int player; //player1: 1, player2: -1.
+    int player; //AI:1, User:-1.
 	tagSQUARE square[M][N]; //M×Nの盤 
 
 	printf("Tic-Tac-Toe start!\n");
@@ -58,11 +60,15 @@ int main(void)
 	PrintBoard(square);
 	
 	//プレイ
-    turn = 0;
+    turn = 1;
+    //先攻後攻を決める。
+    //-1か1でplayerを初期化
+    srand( (unsigned)time( NULL ) ); //srandの初期化
+    player = (int)pow( -1, rand()%2+1 );
 	while ( SearchWinner(square) == 0 ) { 
-        player = (int)pow( -1, turn ); 
-		printf("\nturn %d\nPlayer%d.", turn, turn % 2 + 1 ); 
-        printf("player = %d\n",player);
+        player *= -1;
+		printf("\nturn %d.\n", turn ); 
+        printf("player = %d\n",player); //debug用,playerを確認
         if (player < 0) {
             Input( square, player );
         } else {
@@ -100,9 +106,10 @@ int InitialBoard(tagSQUARE square[M][N]) {
 int Input(tagSQUARE square[M][N], int player) {
 	int tate, yoko;
 	int flag; //異常入力検知
+
+    printf(" User turn, Where is put?\n");
 	do {
 		flag = 0;
-		printf(" Where is put?\n");
 		printf("tate:");
 		scanf("%d", &tate);
 		printf("yoko:");
@@ -223,19 +230,19 @@ int SearchWinner( tagSQUARE square[M][N] ) {
 
 //引数winnerに応じて結果の出力をする。
 void PrintResult( int winner ) { 
-    //player1の勝ち
+    //AIの勝ち
     if ( winner == 1 ) { 
         printf("\x1b[31m");
-        printf("\nPlayer 1");
+        printf("\nAI");
         printf("\x1b[39m");
-        printf(" is win!\n");
+        printf(" wins!\n");
     }
-    //player2の勝ち
+    //Userの勝ち//user
     if ( winner == -1 ) { 
         printf("\x1b[34m");
-        printf("\nPlayer -1");
+        printf("\nUser");
         printf("\x1b[39m");
-        printf(" is win!\n");
+        printf(" win!\n");
     }
     //引き分け
     if ( winner == 0) { 
@@ -249,7 +256,6 @@ int AI_Input(tagSQUARE square[M][N], int player) {
     srand( (unsigned)time( NULL ) ); //srandの初期化
 	do {
 		flag = 0;
-		printf("== play AI ==\n");
         //tate,yokoを選ぶ
         if (square[1][1].state == 0) {
             tate = 2;
@@ -258,15 +264,18 @@ int AI_Input(tagSQUARE square[M][N], int player) {
             tate = rand() % M + 1;
             yoko = rand() % N + 1;
         }
-		printf("tate: %d\n", tate );
-		printf("yoko: %d\n", yoko );
 		if ((tate > M || tate <= 0 ) || (yoko > N || yoko <= 0 )) {
 			flag = 1;
 		} else if (square[tate-1][yoko-1].state != 0){
 			flag = 1;
 		}
 	} while (flag); //正常な入力がされるまで繰り返す。
+    //表示
+    printf(" AI turn, Please wait...\n");
+    printf("tate: %d\n", tate );
+    printf("yoko: %d\n", yoko );
 
 	square[tate-1][yoko-1].state = player; //選択したマスにプレイヤーを入力
 
     return 0;
+}
