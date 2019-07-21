@@ -68,7 +68,7 @@ int main(void)
 	while ( SearchWinner(square) == 0 ) { 
         player *= -1;
 		printf("\nturn %d.\n", turn ); 
-        printf("player = %d\n",player); //debug用,playerを確認
+        //printf("player = %d\n",player); //debug用,playerを確認
         if (player < 0) {
             Input( square, player );
         } else {
