@@ -12,6 +12,8 @@
 /* 	Create 3×3 game for PvP.                   */ 
 /* @version:1.10 (2019/07/20)                  */
 /* 	Create Graphic of play Board.              */ 
+/* @version:1.20 (2019/07/20)                  */
+/* 	Update Graphic to color.                   */ 
 /***********************************************/
 
 #include<stdio.h>
