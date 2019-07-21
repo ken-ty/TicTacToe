@@ -17,7 +17,9 @@
 /* @version:1.30 (2019/07/20)                  */
 /*  Create AI play thinking nothing and randam.*/
 /* @version:1.40 (2019/07/20)                  */
-/*  Update AI play search center square.       */
+/*  Create AI play search center square.       */
+/* @version:1.41 (2019/07/21)                  */
+/*  Update AI hide miss choice.                */
 /***********************************************/
 
 #include <stdio.h>
@@ -259,10 +261,8 @@ int AI_Input(tagSQUARE square[M][N], int player) {
 		printf("tate: %d\n", tate );
 		printf("yoko: %d\n", yoko );
 		if ((tate > M || tate <= 0 ) || (yoko > N || yoko <= 0 )) {
-			printf("error1: tateは1 ~ %d, yokoは1 ~ %d の数字で入力してください\n\n", M, N);
 			flag = 1;
 		} else if (square[tate-1][yoko-1].state != 0){
-			printf("error2: 別のマスを入力してください\n\n");
 			flag = 1;
 		}
 	} while (flag); //正常な入力がされるまで繰り返す。
@@ -270,66 +270,3 @@ int AI_Input(tagSQUARE square[M][N], int player) {
 	square[tate-1][yoko-1].state = player; //選択したマスにプレイヤーを入力
 
     return 0;
-}
-int SearchWinner( tagSQUARE square[M][N] ) {
-	int i, j, k;
-	int cnt;
-	// 横のライン
-	for( i=0; i<M; i++ ){
-		for( j=0; j<N-(K-1); j++ ){
-			cnt = 1;
-			for( k=1; k<K; k++ ) {
-                if ( square[i][j].state == 0 ) break; //空なら数えない
-                //連続で並んでいる数を数える
-                else if ( square[i][j].state == square[i][j+k].state ) cnt++;
-			}
-			if ( cnt >= K ) {
-                return square[i][j].state; //勝った方の数字を返す
-			}
-		}
-	}
-	// 縦のライン
-	for( i=0; i<M-(K-1); i++ ){
-		for( j=0; j<N; j++ ){
-			cnt = 1;
-			for( k=1; k<K; k++ ) {
-                if ( square[i][j].state == 0 ) break; //空なら数えない
-                //連続で並んでいる数を数える
-                else if ( square[i][j].state == square[i+k][j].state ) cnt++;
-			}
-			if ( cnt >= K ) {
-                return square[j][i].state; //勝った方の数字を返す
-			}
-		}
-	}
-	//左斜めのライン
-	for( i=0; i<M-(K-1); i++ ){
-		for( j=0; j<N-(K-1); j++ ){
-			cnt = 1;
-			for( k=1; k<K; k++ ) {
-                if ( square[i][j].state == 0 ) break; //空なら数えない
-                //連続で並んでいる数を数える
-                else if ( square[i][j].state == square[i+k][j+k].state ) cnt++;
-			}
-			if ( cnt >= K ) {
-                return square[i][j].state; //勝った方の数字を返す
-			}
-		}
-	}
-	//右斜めのライン
-    for( i=0; i<M-(K-1); i++ ){
-        for( j=(K-1); j<N; j++ ){
-			cnt = 1;
-			for( k=1; k<K; k++ ) {
-                if ( square[i][j].state == 0 ) break; //空なら数えない
-                //連続で並んでいる数を数える
-                else if ( square[i][j].state == square[i+k][j-k].state ) cnt++; 
-            }
-            if ( cnt >= K ) {
-                return square[i][j].state; //勝った方の数字を返す
-            }
-		}
-	}
-	//どの勝利条件を満たしていない
-	return 0;
-}
