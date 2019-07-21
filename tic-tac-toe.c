@@ -22,6 +22,10 @@
 /*  Update AI hide miss choice.                */
 /* @version:1.42 (2019/07/21)                  */
 /*  Change first player choise to random.      */
+/* @version:1.50 (2019/07/21)                  */
+/*  Create evaluation function initialize.     */
+/* @version:1.51 (2019/07/21)                  */
+/*  Create AI use evaluation function for play.*/
 /***********************************************/
 
 #include <stdio.h>
@@ -35,6 +39,7 @@
 //マスの構造体
 typedef struct tagSQUARE {
 	int state; //状態... 0:空, 1:○, -1:×.
+    int AI_value; //AIから見たそのマスの価値
 } tagSQUARE;
 
 int InitialBoard( tagSQUARE [M][N] ); //ボードの初期化
@@ -43,6 +48,7 @@ int PrintBoard( tagSQUARE [M][N] );  //ボードの状態の出力
 int SearchWinner( tagSQUARE [M][N] ); //勝敗チェック
 void PrintResult( int ); //結果の出力
 
+int CreateEvaluationFunction( tagSQUARE [M][N] );
 int AI_Input( tagSQUARE [M][N], int ); //AIの入力 
 
 int main(void) 
@@ -56,9 +62,10 @@ int main(void)
 
 	//ボードの生成
 	InitialBoard(square); //ボードの初期化
-	printf("Create %d×%d board.\n\n", M, N);
+    CreateEvaluationFunction(square); //評価関数の生成
+    printf("Create %d×%d board.\n\n", M, N);
 	PrintBoard(square);
-	
+
 	//プレイ
     turn = 1;
     //先攻後攻を決める。
@@ -75,7 +82,7 @@ int main(void)
             AI_Input( square, player );
         }
 		PrintBoard( square );
-		if ( turn >= M *N -1 ) break; //全部おいたらloopを抜ける
+		if ( turn >= M *N ) break; //全部おいたらloopを抜ける
 		turn++;
 	}
     //結果の出力
@@ -91,6 +98,32 @@ int InitialBoard(tagSQUARE square[M][N]) {
 	for (i = 0; i < M; i++) {
 		for (j = 0; j < N; j++) {
 			square[i][j].state = 0; //0...空
+		}
+	}
+
+    return 0;
+}
+
+//評価関数の初期化
+//square[M][N]のすべての.AI_valueを初期化(3×3のみ対応)
+int CreateEvaluationFunction(tagSQUARE square[M][N]) {
+	int i, j;
+	for (i = 0; i < M; i++) {
+		for (j = 0; j < N; j++) {
+            if (i == 1) {
+                if (j == 1) {
+                    square[i][j].AI_value = 4; //中央は4ラインに影響
+                } else {
+                    square[i][j].AI_value = 2; //辺は2ラインに影響
+                }
+            } else {
+                if(j == 0 || j == N-1) {
+                    square[i][j].AI_value = 3; //隅は3ラインに影響
+                } else {
+                    square[i][j].AI_value = 2; //辺は2ラインに影響
+                }
+            }
+                
 		}
 	}
 
@@ -135,6 +168,7 @@ int PrintBoard(tagSQUARE square[M][N]) {
 	for (i = 0; i < M; i++) {
 		printf("%2d | ", i+1); //横ライン番号
 		for (j = 0; j < N; j++) {
+            printf("%d", square[i][j].AI_value); //評価関数を表示
             printf("\x1b[47m");
 			if (square[i][j].state == 1) {
                 printf("\x1b[31m");
@@ -251,31 +285,30 @@ void PrintResult( int winner ) {
 }
 
 int AI_Input(tagSQUARE square[M][N], int player) {
+	int i, j;
 	int tate, yoko;
-	int flag; //異常入力検知
-    srand( (unsigned)time( NULL ) ); //srandの初期化
-	do {
-		flag = 0;
-        //tate,yokoを選ぶ
-        if (square[1][1].state == 0) {
-            tate = 2;
-            yoko = 2;
-        } else {
-            tate = rand() % M + 1;
-            yoko = rand() % N + 1;
-        }
-		if ((tate > M || tate <= 0 ) || (yoko > N || yoko <= 0 )) {
-			flag = 1;
-		} else if (square[tate-1][yoko-1].state != 0){
-			flag = 1;
+    int value = -1;
+
+    //全てのマスを調べ、最も大きいvalueのマスを見つける
+	for (i = 0; i < M; i++) {
+		for (j = 0; j < N; j++) {
+            if (square[i][j].state != 0) { //置かれているマスは無視
+            } else if (value < square[i][j].AI_value ) {
+                //valueを更新
+                value = square[i][j].AI_value;
+                //選んだ座標を代入
+                tate = i+1;
+                yoko = j+1;
+            }
 		}
-	} while (flag); //正常な入力がされるまで繰り返す。
+	}
+
     //表示
     printf(" AI turn, Please wait...\n");
     printf("tate: %d\n", tate );
     printf("yoko: %d\n", yoko );
 
-	square[tate-1][yoko-1].state = player; //選択したマスにプレイヤーを入力
+    square[tate-1][yoko-1].state = player; //選択したマスにプレイヤーを入力
 
     return 0;
 }
