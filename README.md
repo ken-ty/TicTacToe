@@ -1,6 +1,7 @@
 # TicTacToe
 3目並べをAIと対戦できます。 コンソールで動きます。    
 Create AI play tic-tac-toe.    
+![demo](https://github.com/kentokura/TicTacToe/blob/master/demo.gif)
   
 使い方
 ------
