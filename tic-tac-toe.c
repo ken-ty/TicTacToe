@@ -26,8 +26,10 @@
 /*  Create evaluation function initialize.     */
 /* @version:1.51 (2019/07/21)                  */
 /*  Create AI use evaluation function for play.*/
+/* @version:1.60 (2019/07/23)                  */
+/*  Create evaluation function everytime.      */
 /***********************************************/
-
+#include <unistd.h> //sleep関数
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -40,6 +42,7 @@
 typedef struct tagSQUARE {
 	int state; //状態... 0:空, 1:○, -1:×.
     int AI_value; //AIから見たそのマスの価値
+    int User_value; //Userから見たそのマスの価値
 } tagSQUARE;
 
 int InitialBoard( tagSQUARE [M][N] ); //ボードの初期化
@@ -48,7 +51,9 @@ int PrintBoard( tagSQUARE [M][N] );  //ボードの状態の出力
 int SearchWinner( tagSQUARE [M][N] ); //勝敗チェック
 void PrintResult( int ); //結果の出力
 
-int CreateEvaluationFunction( tagSQUARE [M][N] );
+int evaluation( int overfield, int cnt_AI, int cnt_user, int cnt_void ); //評価テーブル
+int EvaluateSquare( tagSQUARE [M][N], int i, int j ); //一つのマスの評価を更新
+void UpdateEvaluate( tagSQUARE [M][N] );// 全てのマスの評価を更新
 int AI_Input( tagSQUARE [M][N], int ); //AIの入力 
 
 int main(void) 
@@ -62,7 +67,7 @@ int main(void)
 
 	//ボードの生成
 	InitialBoard(square); //ボードの初期化
-    CreateEvaluationFunction(square); //評価関数の生成
+    //UpdateEvaluate(square); //評価関数の生成
     printf("Create %d×%d board.\n\n", M, N);
 	PrintBoard(square);
 
@@ -72,10 +77,19 @@ int main(void)
     //-1か1でplayerを初期化
     srand( (unsigned)time( NULL ) ); //srandの初期化
     player = (int)pow( -1, rand()%2+1 );
-	while ( SearchWinner(square) == 0 ) { 
+	while ( SearchWinner( square ) == 0 ) { 
+        //更新結果を表示
+        /*
+        UpdateEvaluate( square ); //評価関数の更新
+        printf("||\n");
+        printf("||evaluation changed. \n");
+        printf("\\/\n\n");
+		PrintBoard( square );
+        */
         player *= -1;
 		printf("\nturn %d.\n", turn ); 
         //printf("player = %d\n",player); //debug用,playerを確認
+        UpdateEvaluate(square); //評価関数の更新
         if (player < 0) {
             Input( square, player );
         } else {
@@ -104,30 +118,97 @@ int InitialBoard(tagSQUARE square[M][N]) {
     return 0;
 }
 
-//評価関数の初期化
-//square[M][N]のすべての.AI_valueを初期化(3×3のみ対応)
-int CreateEvaluationFunction(tagSQUARE square[M][N]) {
+//評価関数の更新
+void UpdateEvaluate(tagSQUARE square[M][N]) {
 	int i, j;
 	for (i = 0; i < M; i++) {
 		for (j = 0; j < N; j++) {
-            if (i == 1) {
-                if (j == 1) {
-                    square[i][j].AI_value = 4; //中央は4ラインに影響
-                } else {
-                    square[i][j].AI_value = 2; //辺は2ラインに影響
+            //square[i][j].AI_valueを更新する関数
+            square[i][j].AI_value = EvaluateSquare(square, i, j);
+        }
+    }
+}
+//square[i][j].valueを更新する関数
+int EvaluateSquare(tagSQUARE square[M][N], int i,int j) {
+    int k, l;
+    int cnt_AI, cnt_User, cnt_void;
+    int overfield;
+    int direction;
+    int value = 0;
+    int A;
+    int I, J;
+    int cnt = 0;
+    if (square[i][j].state == 0) { 
+        //printf("\nevaluate square[%d][%d] ...\n",i,j);
+        for (direction = 1; direction <= 4; direction++) { //4方向
+            //printf("direction%d\n",direction);
+            for (k = 0; k < K; k++) {//長さ3のラインを3通り
+                cnt_AI =0;
+                cnt_User =0;
+                cnt_void =0;
+                overfield = 0;
+                //全てのラインを検索し、valueに評価の合計を与える
+                for (l = 0; l < K; l++) { //１マスずつ見る。
+                    //1マスずつ状態を確認
+                    switch( direction ) {
+                        case 1: //横
+                            J = (j-2+k)+l;
+                            if ( J < 0 || J > N-1 ) {
+                                overfield = 1;
+                            } else {
+                                A = square[i][J].state;
+                            }
+                            break;
+                        case 2: //縦
+                            I = (i-2+k)+l;
+                            if ( I < 0 || I > M-1 ) {
+                                overfield = 1;
+                            } else {
+                                A = square[I][j].state;
+                            }
+                            break;
+                        case 3: //斜め１
+                            I = (i-2+k)+l;
+                            J = (j-2+k)+l;
+                            if ( I < 0 || I > M-1 ) {
+                                overfield = 1;
+                            }else if ( J < 0 || J > N-1 ) {
+                                overfield = 1;
+                            } else {
+                                A = square[I][J].state;
+                            }
+                            break;
+                        case 4: //斜め2
+                            I = (i+2-k)-l;
+                            J = (j-2+k)+l;
+                            if ( I < 0 || I > M-1 ) {
+                                overfield = 1;
+                            } else if ( J < 0 || J > N-1 ) {
+                                overfield = 1;
+                            } else {
+                                A = square[I][J].state;
+                            }
+                            break;
+                    }
+                    //カウント
+                    switch( A ) {
+                        case -1:
+                            cnt_User++;
+                            break;
+                        case 0:
+                            cnt_void++;
+                            break;
+                        case 1:
+                            cnt_AI++;
+                            break;
+                    }
                 }
-            } else {
-                if(j == 0 || j == N-1) {
-                    square[i][j].AI_value = 3; //隅は3ラインに影響
-                } else {
-                    square[i][j].AI_value = 2; //辺は2ラインに影響
-                }
+                //カウントしたパターンによって、評価を加算する
+                value += evaluation( overfield, cnt_AI, cnt_User, cnt_void ); 
             }
-                
-		}
-	}
-
-    return 0;
+        }
+    }
+    return value;
 }
 
 /*
@@ -168,7 +249,7 @@ int PrintBoard(tagSQUARE square[M][N]) {
 	for (i = 0; i < M; i++) {
 		printf("%2d | ", i+1); //横ライン番号
 		for (j = 0; j < N; j++) {
-            printf("%d", square[i][j].AI_value); //評価関数を表示
+            //printf("%04d", square[i][j].AI_value); //評価関数を表示
             printf("\x1b[47m");
 			if (square[i][j].state == 1) {
                 printf("\x1b[31m");
@@ -304,11 +385,59 @@ int AI_Input(tagSQUARE square[M][N], int player) {
 	}
 
     //表示
-    printf(" AI turn, Please wait...\n");
+    //プレイ間を出すため、数秒止める。
+    printf(" AI turn, Please wait.\n");
+    sleep(4);//4秒休止
+
     printf("tate: %d\n", tate );
     printf("yoko: %d\n", yoko );
 
     square[tate-1][yoko-1].state = player; //選択したマスにプレイヤーを入力
 
     return 0;
+}
+/*ラインの評価 以下の表より、valueを返す。
+  //3×3のみ対応
+    勝利手
+    〇2は最も高い。(4×次善策より高い)
+    213
+    ============================
+    相手の勝利手を防ぐ。 
+    × 2は防ぐ。(4×次善策より高い)
+    73
+    ============================
+    勝利に近づく
+    空1, 〇1 (2×次善策より高い)
+    18
+    空2 (4×次善策より高い)
+    9
+    ============================
+    あんまり意味がない
+    ×1,〇1 (2×次善策より高い)
+    2
+    ×1,から1。
+    1
+    ============================
+    ラインじゃない
+    overfield が1以上
+    0
+*/
+int evaluation( int overfield, int cnt_AI, int cnt_User, int cnt_void ) {
+    int value = 0;
+    if ( !overfield ) {
+        if ( cnt_void == 1 && cnt_AI == 2) { //空1, 〇2
+            value = 213;
+        } else if ( cnt_void == 1 && cnt_User == 2) { //空1, × 2
+            value = 73;
+        } else if ( cnt_void == 2 && cnt_AI == 1 ) { //空2 , 〇1
+            value = 18;
+        } else if ( cnt_void == 3) { //空3
+            value = 9;
+        } else if ( cnt_void == 1 && cnt_AI == 1 && cnt_User == 1) { //空1, 〇1 , × 1
+            value = 2;
+        } else if ( cnt_void == 2 && cnt_User == 1) { //空2 , × 1
+            value = 1;
+        }
+    }
+    return value;
 }
