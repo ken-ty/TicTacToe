@@ -25,6 +25,8 @@ AIはマスごとに、そのマスの現在の価値を計算しています。
   
 tic-tac-toe.cのソースコードに、PrintBoard関数が定義されています。
 評価値を出力するコードをコメントアウトしてあるので、興味のある方は見てみてください。  
+### ソースコードの変更の仕方
+![demo](https://github.com/kentokura/TicTacToe/blob/media/gif/demo2.gif)
 
 関連情報
 --------
