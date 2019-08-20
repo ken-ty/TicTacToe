@@ -65,4 +65,5 @@ gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c
 ライセンス
 ----------
 Copyright &copy; 2019 xxxxxx  
-ライセンスについては、勉強不足なので、更新予定とします。  
+ライセンスについては、勉強不足です。  
+自由に使っていただいて結構です。
