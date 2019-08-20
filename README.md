@@ -19,7 +19,7 @@ gcc tic-tac-toe.c -lm -o tic-tac-toe
 ./tic-tac-toe
   
 解説
-----------------
+-------
 AIはマスごとに、そのマスの現在の価値を計算しています。
 その時一番大きな価値をもつマスに打ちます。  
   
@@ -28,7 +28,32 @@ tic-tac-toe.cのソースコードに、PrintBoard関数が定義されていま
 
 関連情報
 --------
-特になし
+###バージョン情報
+````
+/* @version:1.00 (2019/07/19)                  */
+/*  Create 3×3 game for PvP.                   */
+/* @version:1.10 (2019/07/20)                  */
+/*  Create Graphic of play Board.              */ 
+/* @version:1.20 (2019/07/20)                  */
+/*  Update Graphic to color.                   */ 
+/* @version:1.30 (2019/07/20)                  */
+/*  Create AI play thinking nothing and randam.*/
+/* @version:1.40 (2019/07/20)                  */
+/*  Create AI play search center square.       */
+/* @version:1.41 (2019/07/21)                  */
+/*  Update AI hide miss choice.                */
+/* @version:1.42 (2019/07/21)                  */
+/*  Change first player choise to random.      */
+/* @version:1.50 (2019/07/21)                  */
+/*  Create evaluation function initialize.     */
+/* @version:1.51 (2019/07/21)                  */
+/*  Create AI use evaluation function for play.*/
+/* @version:1.60 (2019/07/23)                  */
+/*  Create evaluation function everytime.      */
+/* @version:1.70 (2019/08/20)                  */
+/*  Separate file.                             */
+/***********************************************/
+````
   
 ライセンス
 ----------
