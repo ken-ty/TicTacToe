@@ -6,19 +6,20 @@ Create AI play tic-tac-toe.
 使い方
 ------
 ### ダウンロード
-tic-tac-toe.cをダウンロードしてください。  
+全てのファイルをダウンロードしてください。  
 
 ### コンパイル
 tic-tac-toe.cがあるディレクトリで、以下のコマンドを入力してください。  
 
-<u>gcc tic-tac-toe.c -lm -o tic-tac-toe</u>
+~~gcc tic-tac-toe.c -lm -o tic-tac-toe~~
 gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c PrintResult.c SearchWinner.c AI_Input.c evaluation.c -o game
 
   
 すると、tic-tac-toe というファイルが作成されたはずです。  
 実行するには、以下のコマンドを入力してください。  
 
-./tic-tac-toe
+~~./tic-tac-toe~~
+./game.exe
   
 解説
 -------
