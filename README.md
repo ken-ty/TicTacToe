@@ -9,26 +9,27 @@ Create AI play tic-tac-toe.
 全てのファイルをダウンロードしてください。  
 
 ### コンパイル
-tic-tac-toe.cがあるディレクトリで、以下のコマンドを入力してください。  
+以下のコマンドを入力してください。  
 
 ~~gcc tic-tac-toe.c -lm -o tic-tac-toe~~  
 gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c PrintResult.c SearchWinner.c AI_Input.c evaluation.c -o game
 
   
-すると、tic-tac-toe というファイルが作成されたはずです。  
+すると、gameという実行ファイルが作成されたはずです。  
 実行するには、以下のコマンドを入力してください。  
 
 ~~./tic-tac-toe~~  
-./game.exe
+./game
   
 解説
 -------
-AIはマスごとに、そのマスの現在の価値を計算しています。
+~~AIはマスごとに、そのマスの現在の価値を計算しています。
 その時一番大きな価値をもつマスに打ちます。  
   
 tic-tac-toe.cのソースコードに、PrintBoard関数が定義されています。
-評価値を出力するコードをコメントアウトしてあるので、興味のある方は見てみてください。  
-追記: ファイルを分割したので、適宜読み替えてください。
+評価値を出力するコードをコメントアウトしてあるので、興味のある方は見てみてください。~~
+
+(2019/08/20)追記: ファイルを分割したので、適宜読み替えてください。
 ### ソースコードの変更の仕方
 ![demo](https://github.com/kentokura/TicTacToe/blob/media/gif/demo2.gif)
 
