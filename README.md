@@ -23,9 +23,9 @@ gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c
   
 解説
 -------
-~~AIはマスごとに、そのマスの現在の価値を計算しています。
-その時一番大きな価値をもつマスに打ちます。  ~~
-  
+~~AIはマスごとに、そのマスの現在の価値を計算しています。~~  
+~~その時一番大きな価値をもつマスに打ちます。~~
+
 ~~tic-tac-toe.cのソースコードに、PrintBoard関数が定義されています。
 評価値を出力するコードをコメントアウトしてあるので、興味のある方は見てみてください。~~
 
