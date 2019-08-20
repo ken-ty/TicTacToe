@@ -11,7 +11,9 @@ tic-tac-toe.cをダウンロードしてください。
 ### コンパイル
 tic-tac-toe.cがあるディレクトリで、以下のコマンドを入力してください。  
 
-gcc tic-tac-toe.c -lm -o tic-tac-toe
+<u>gcc tic-tac-toe.c -lm -o tic-tac-toe</u>
+gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c PrintResult.c SearchWinner.c AI_Input.c evaluation.c -o game
+
   
 すると、tic-tac-toe というファイルが作成されたはずです。  
 実行するには、以下のコマンドを入力してください。  
