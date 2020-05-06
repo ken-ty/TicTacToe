@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/kentokura/TicTacToe)
+![![GitHub](https://img.shields.io/github/license/kentokura/TicTacToe)](./LICENSE)
 # TicTacToe
 3目並べをAIと対戦できます。 コンソールで動きます。    
 Create AI play tic-tac-toe.    
