@@ -13,15 +13,16 @@ Create AI play tic-tac-toe.
 ### コンパイル
 以下のコマンドを入力してください。  
 
-~~gcc tic-tac-toe.c -lm -o tic-tac-toe~~  
+```
 gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c PrintResult.c SearchWinner.c AI_Input.c evaluation.c -o game
+```
 
-  
 すると、gameという実行ファイルが作成されたはずです。  
 実行するには、以下のコマンドを入力してください。  
-
-~~./tic-tac-toe~~  
+ 
+```
 ./game
+```
   
 解説
 -------
