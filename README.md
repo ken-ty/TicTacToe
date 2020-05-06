@@ -66,5 +66,4 @@ gcc main.c EvaluateSquare.c InitialBoard.c Input.c UpdateEvaluate.c PrintBoard.c
   
 ライセンス
 ----------
-MITライセンスです。お気軽に使用してください。
-できればUnityとかでグラフィカルにしてほしいっす。
+[MITライセンス](./LICENSE)です。お気軽に使用してください。
